@@ -8,7 +8,8 @@ export const Navbar: React.FC = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      // Show sticky navbar once scrolled past the top hero dock (past 90px)
+      setIsScrolled(window.scrollY > 90);
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
@@ -34,21 +35,26 @@ export const Navbar: React.FC = () => {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? 'bg-[#FAF9F5]/90 backdrop-blur-md py-3 shadow-xs border-b border-[#121814]/5'
-          : 'bg-transparent py-5'
+          ? 'opacity-100 translate-y-0 bg-[#FAF9F5]/95 backdrop-blur-md py-3 shadow-xs border-b border-[#121814]/5 pointer-events-auto'
+          : 'opacity-0 -translate-y-2 pointer-events-none py-3'
       }`}
+      aria-hidden={!isScrolled}
     >
       <div className="max-w-7xl mx-auto px-6 sm:px-8 flex items-center justify-between">
-        {/* Zone 1: Official Logo */}
+        {/* Official Logo */}
         <a
           href="#"
+          onClick={(e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
           className="flex items-center transition-opacity hover:opacity-85"
           aria-label="REUSE Home"
         >
           <Logo className="h-7 sm:h-8" />
         </a>
 
-        {/* Zone 2: Navigation Links */}
+        {/* Navigation Links */}
         <nav className="hidden md:flex items-center gap-8 text-[14px] font-medium text-[#465049]">
           {navLinks.map((link) => (
             <a
@@ -60,6 +66,13 @@ export const Navbar: React.FC = () => {
               {link.label}
             </a>
           ))}
+          <a
+            href="#ways-to-reuse"
+            onClick={(e) => handleLinkClick(e, '#ways-to-reuse')}
+            className="px-4 py-1.5 rounded-full bg-[#1D3D2C] text-white hover:bg-[#28533C] transition-all text-[13px] font-semibold"
+          >
+            Explore Marketplace
+          </a>
         </nav>
 
         {/* Mobile menu toggle */}
@@ -87,6 +100,13 @@ export const Navbar: React.FC = () => {
                 {link.label}
               </a>
             ))}
+            <a
+              href="#ways-to-reuse"
+              onClick={(e) => handleLinkClick(e, '#ways-to-reuse')}
+              className="py-2.5 text-center rounded-full bg-[#1D3D2C] text-white hover:bg-[#28533C] transition-all text-[14px] font-semibold mt-2"
+            >
+              Explore Marketplace
+            </a>
           </nav>
         </div>
       )}
